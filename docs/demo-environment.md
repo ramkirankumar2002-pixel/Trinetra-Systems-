@@ -20,7 +20,7 @@ Blocked when `NODE_ENV=production` unless `ALLOW_DEMO_SEED=true` on an **isolate
 | `frozen` | Suspended tenant |
 | `archived` | Archived tenant |
 
-All demo user passwords are the documented development password `demo-password`. Change them before any shared environment.
+All demo user passwords are the documented development password `demo-password`. Full list: [demo-accounts/usernames-and-passwords.md](../demo-accounts/usernames-and-passwords.md). Change them before any shared environment.
 
 ## What the demo can show
 

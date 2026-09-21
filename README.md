@@ -138,14 +138,7 @@ pnpm db:seed
 
 The seed creates a **development demo** organization (`demo`), not a real customer. Materials are not permanently assigned to Type 1 / Type 2 / Type 3.
 
-Development-only login accounts, all password `demo-password`:
-
-- `admin@demo.local` — Administrator
-- `weighbridge@demo.local` — Weighbridge Operator
-- `store@demo.local` — Store Officer
-- `office@demo.local` — Office Manager
-- `inactive@demo.local` — inactive account
-- `site-b@demo.local` — Site user limited to Demo Site B
+Development-only login accounts, all password `demo-password`. Full list: [demo-accounts/usernames-and-passwords.md](./demo-accounts/usernames-and-passwords.md).
 
 Change these before any production deployment.
 
