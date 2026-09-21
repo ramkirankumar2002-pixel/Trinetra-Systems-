@@ -1,6 +1,13 @@
 # Trinetra Systems
 
 Smart Weighbridge Automation & Material Intelligence Platform
+## 🌐 Live Demo
+
+The live version of **Trinetra Systems** is available here:
+
+👉 **[Visit Trinetra Systems – Live Demo](https://trinetra-systems-2026.web.app)**
+
+You can explore the application and experience the Trinetra Systems platform directly through the live demo.
 
 ## Purpose
 
