@@ -1,0 +1,2385 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionStatus {
+  ARRIVED
+  IDENTIFIED
+  DOCUMENT_PENDING
+  DOCUMENT_VERIFIED
+  MATERIAL_CLASSIFIED
+  FIRST_WEIGHMENT
+  PENDING_APPROVAL
+  APPROVED
+  UNLOADING
+  UNLOADED
+  SECOND_WEIGHMENT
+  COMPLETED
+  ON_HOLD
+  REJECTED
+  CANCELLED
+  EXCEPTION
+}
+
+enum WeighmentKind {
+  GROSS
+  TARE
+  OTHER
+}
+
+enum WeighmentSource {
+  MANUAL
+  SIMULATED
+  HARDWARE
+}
+
+enum WeighbridgeProviderType {
+  SIMULATOR
+  SERIAL
+  TCP
+  MODBUS_RTU
+  MODBUS_TCP
+}
+
+enum HardwareDeviceStatus {
+  CONNECTED
+  DISCONNECTED
+  CONNECTING
+  ERROR
+  DISABLED
+}
+
+enum WeightQuality {
+  STABLE
+  UNSTABLE
+  INVALID
+  NO_DATA
+  DEVICE_ERROR
+}
+
+enum CameraPurpose {
+  ENTRY_ANPR
+  EXIT_ANPR
+  GENERAL_MONITORING
+}
+
+enum CameraConnectionType {
+  SIMULATOR
+  RTSP
+  HTTP_SNAPSHOT
+  LOCAL
+}
+
+enum CameraProviderType {
+  SIMULATOR
+  RTSP
+  HTTP_SNAPSHOT
+  LOCAL
+}
+
+enum AnprProviderType {
+  SIMULATOR
+}
+
+enum AnprProviderStatus {
+  READY
+  PROCESSING
+  ERROR
+  UNAVAILABLE
+}
+
+enum AnprDetectionLifecycle {
+  DETECTED
+  MATCHED
+  NO_MATCH
+  CONFIRMATION_REQUIRED
+  CONFIRMED
+  CORRECTED
+  REJECTED
+}
+
+enum AnprDetectionSource {
+  ANPR
+  MANUAL
+}
+
+enum AnprConfidenceBand {
+  HIGH
+  MEDIUM
+  LOW
+  NONE
+}
+
+enum EdgeGatewayStatus {
+  PENDING
+  ONLINE
+  OFFLINE
+  DISABLED
+  REVOKED
+}
+
+enum EdgeDeviceType {
+  WEIGHBRIDGE_INDICATOR
+  CAMERA
+  SCANNER
+  BARCODE_SCANNER
+  SENSOR
+  PLC
+  OTHER
+}
+
+enum EdgeEventType {
+  DEVICE_WEIGHT_READING
+  DEVICE_ANPR_DETECTION
+  DEVICE_STATUS_CHANGED
+  DEVICE_SCAN_COMPLETED
+  LOCAL_TRANSACTION_CREATED
+  LOCAL_TRANSACTION_STATE
+  LOCAL_WEIGHT_ANOMALY
+  LOCAL_FILE_CAPTURED
+  CONNECTIVITY_CHANGED
+}
+
+enum EdgeIngestStatus {
+  RECEIVED
+  PROCESSED
+  REJECTED
+}
+
+enum EdgeConnectivityState {
+  ONLINE
+  DEGRADED
+  OFFLINE
+  SYNCING
+  RECOVERING
+  ERROR
+}
+
+enum EdgeEventPriority {
+  CRITICAL
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum EdgeSyncAckStatus {
+  ACCEPTED
+  ALREADY_PROCESSED
+  CONFLICT
+  REJECTED
+  DEPENDENCY_PENDING
+}
+
+enum EdgeSyncConflictStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum OfflineCapability {
+  ALLOWED
+  CONDITIONAL
+  BLOCKED
+}
+
+enum OperationMode {
+  SIMULATION
+  PILOT
+  PRODUCTION
+}
+
+enum HardwareInstallationStatus {
+  PLANNED
+  CONFIGURED
+  CONNECTED
+  TESTING
+  PILOT
+  PRODUCTION
+  DISABLED
+}
+
+enum HardwareProtocolReadiness {
+  SIMULATOR
+  PROTOCOL_DETAILS_REQUIRED
+  PROTOCOL_TEST_ONLY
+  DOCUMENTED
+}
+
+enum CommissioningTestResult {
+  PASS
+  FAIL
+  NOT_TESTED
+}
+
+enum ApprovalDecision {
+  PENDING
+  APPROVED
+  REJECTED
+  HOLD
+  CANCELLED
+}
+
+enum DocumentStatus {
+  UPLOADED
+  PROCESSING
+  EXTRACTED
+  VERIFIED
+  REJECTED
+}
+
+enum OcrStatus {
+  NOT_STARTED
+  SIMULATED
+  COMPLETED
+  FAILED
+}
+
+enum UnloadingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum UnloadingPointStatus {
+  AVAILABLE
+  OCCUPIED
+  INACTIVE
+}
+
+enum TransactionCorrectionStatus {
+  REQUESTED
+  APPROVED
+  APPLIED
+  REJECTED
+}
+
+enum WorkflowCapability {
+  IDENTIFY_VEHICLE
+  CAPTURE_DOCUMENTS
+  VERIFY_DOCUMENTS
+  CLASSIFY_MATERIAL
+  FIRST_WEIGHMENT
+  APPROVAL
+  UNLOAD
+  SECOND_WEIGHMENT
+  COMPLETE
+}
+
+enum SecuritySeverity {
+  ANOMALY
+  SUSPICIOUS_EVENT
+  HIGH_RISK_EVENT
+}
+
+enum SecurityCategory {
+  WEIGHT_ANOMALY
+  ACCESS
+  TAMPER_SUSPICION
+  PERSON_DETECTION
+  MAINTENANCE
+  OTHER
+}
+
+enum SecurityEventSource {
+  SIMULATED
+  CAMERA
+  WEIGHBRIDGE
+  USER
+  RULE_ENGINE
+}
+
+enum SecurityEventStatus {
+  OPEN
+  ACKNOWLEDGED
+  DISMISSED
+  RESOLVED
+  FALSE_POSITIVE
+}
+
+enum BackupRunStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+  UNVERIFIED
+}
+
+enum BackupTrigger {
+  MANUAL
+  SCHEDULED
+  STARTUP
+}
+
+enum WeightAnomalyType {
+  EMPTY_PLATFORM_WEIGHT
+  SUDDEN_WEIGHT_CHANGE
+  REPEATED_INSTABILITY
+  WEIGHT_JUMP
+  NEGATIVE_OR_INVALID_WEIGHT
+}
+
+enum WeightAnomalyStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+  FALSE_POSITIVE
+}
+
+enum WeighbridgePlatformState {
+  EMPTY
+  VEHICLE_PRESENT
+  WEIGHING
+  UNLOADING
+  WAITING_FOR_TARE
+  MAINTENANCE
+  UNKNOWN
+}
+
+enum WeightAnomalyTimelineKind {
+  DETECTED
+  PERSISTS
+  ACKNOWLEDGED
+  RECOVERED
+  RESOLVED
+  FALSE_POSITIVE
+  SUPPRESSED
+}
+
+enum WeightAnomalyDetectorKind {
+  RULE
+  STATISTICAL
+  ML
+}
+
+enum MaintenanceStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationSeverity {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+enum NotificationCategory {
+  WORKFLOW
+  APPROVAL
+  EXCEPTION
+  SYSTEM
+}
+
+enum OperationalAlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum OrganizationStatus {
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum OrganizationKind {
+  DEMO
+  CUSTOMER
+}
+
+enum SiteStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum OnboardingSessionStatus {
+  DRAFT
+  IN_PROGRESS
+  READY_FOR_VALIDATION
+  COMPLETED
+  BLOCKED
+  CANCELLED
+}
+
+enum SupportTicketCategory {
+  WEIGHBRIDGE
+  DEVICE
+  GATEWAY
+  ANPR
+  DOCUMENT_SCANNER
+  SOFTWARE
+  NETWORK
+  OFFLINE_SYNC
+  USER_ACCESS
+  TRANSACTION
+  REPORTING
+  OTHER
+}
+
+enum SupportTicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum SupportTicketStatus {
+  OPEN
+  ACKNOWLEDGED
+  IN_PROGRESS
+  WAITING_FOR_CUSTOMER
+  WAITING_FOR_MAINTENANCE
+  RESOLVED
+  CLOSED
+  CANCELLED
+}
+
+enum SupportActivityType {
+  COMMENT
+  INTERNAL_NOTE
+  STATUS_CHANGE
+  ASSIGNMENT
+  PRIORITY_CHANGE
+  MAINTENANCE
+  RESOLUTION
+}
+
+enum SupportActivityVisibility {
+  CUSTOMER
+  INTERNAL
+}
+
+enum ServiceMaintenanceType {
+  CORRECTIVE
+  PREVENTIVE
+  INSPECTION
+  CALIBRATION
+  COMMISSIONING
+  REPAIR
+  OTHER
+}
+
+enum ServiceMaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum IntegrationStatus {
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+enum IntegrationEnvironment {
+  TEST
+  PRODUCTION
+}
+
+enum IntegrationCredentialStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum IntegrationWebhookStatus {
+  ACTIVE
+  DISABLED
+  REVOKED
+}
+
+enum IntegrationDeliveryStatus {
+  PENDING
+  DELIVERING
+  DELIVERED
+  FAILED
+  DISABLED
+}
+
+enum IntegrationExternalType {
+  ERP_TRANSACTION
+  PURCHASE_ORDER
+  DELIVERY_REFERENCE
+  SUPPLIER
+  CUSTOM
+}
+
+model Organization {
+  id                     String             @id @default(cuid())
+  name                   String
+  slug                   String             @unique
+  status                 OrganizationStatus @default(ACTIVE)
+  kind                   OrganizationKind   @default(CUSTOMER)
+  contactName            String?
+  contactEmail           String?
+  defaultLanguage        String             @default("en")
+  enabledDriverLanguages String[]           @default(["en", "hi", "te"])
+  driverVoiceEnabled     Boolean            @default(true)
+  driverAudioEnabled     Boolean            @default(true)
+  documentTypeCodes      String[]           @default([])
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  sites                       Site[]
+  departments                 Department[]
+  users                       User[]
+  roles                       Role[]
+  vehicles                    Vehicle[]
+  drivers                     Driver[]
+  suppliers                   Supplier[]
+  materials                   Material[]
+  workflowDefinitions         WorkflowDefinition[]
+  materialWorkflowAssignments MaterialWorkflowAssignment[]
+  weighbridges                Weighbridge[]
+  hardwareProfiles            WeighbridgeHardwareProfile[]
+  transactions                Transaction[]
+  documents                   Document[]
+  approvals                   Approval[]
+  notifications               Notification[]
+  operationalAlerts           OperationalAlert[]
+  auditLogs                   AuditLog[]
+  securityEvents              SecurityEvent[]
+  maintenanceEvents           MaintenanceEvent[]
+  unloadingPoints             UnloadingPoint[]
+  unloadingPointAssignmentRules UnloadingPointAssignmentRule[]
+  transactionCorrections      TransactionCorrection[]
+  cameras                     Camera[]
+  anprDetections              AnprDetection[]
+  vehicleIdentificationEvents VehicleIdentificationEvent[]
+  edgeGateways                EdgeGateway[]
+  edgeDevices                 EdgeDevice[]
+  edgeIngestedEvents          EdgeIngestedEvent[]
+  hardwareCommissioningTests  HardwareCommissioningTest[]
+  weightAnomalyConfigs        WeightAnomalyConfig[]
+  weightAnomalyEvents         WeightAnomalyEvent[]
+  offlinePolicies             OfflinePolicy[]
+  edgeLocalTransactionMaps    EdgeLocalTransactionMap[]
+  edgeSyncSnapshots           EdgeSyncSnapshot[]
+  edgeSyncConflicts           EdgeSyncConflict[]
+  edgeDeadLetters             EdgeDeadLetter[]
+  edgeSyncedFiles             EdgeSyncedFile[]
+  backupRuns                  BackupRun[]
+  onboardingSessions          OnboardingSession[]
+  supportTickets              SupportTicket[]
+  supportTicketActivities     SupportTicketActivity[]
+  serviceMaintenanceRecords   ServiceMaintenanceRecord[]
+  integrationApplications     IntegrationApplication[]
+  integrationCredentials      IntegrationCredential[]
+  integrationWebhooks         IntegrationWebhook[]
+  integrationOutboxEvents     IntegrationOutboxEvent[]
+  integrationWebhookDeliveries IntegrationWebhookDelivery[]
+  integrationIdempotencyKeys  IntegrationIdempotencyKey[]
+  integrationExternalReferences IntegrationExternalReference[]
+  integrationFieldMappings    IntegrationFieldMapping[]
+  integrationRequestLogs      IntegrationRequestLog[]
+}
+
+model Site {
+  id             String        @id @default(cuid())
+  organizationId String
+  name           String
+  code           String
+  location       String?
+  timezone       String        @default("Asia/Kolkata")
+  operationMode  OperationMode @default(SIMULATION)
+  status         SiteStatus    @default(ACTIVE)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+
+  organization                Organization                 @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  defaultUsers                User[]
+  userRoles                   UserRole[]
+  weighbridges                Weighbridge[]
+  hardwareProfiles            WeighbridgeHardwareProfile[]
+  transactions                Transaction[]
+  materialWorkflowAssignments MaterialWorkflowAssignment[]
+  approvals                   Approval[]
+  notifications               Notification[]
+  operationalAlerts           OperationalAlert[]
+  securityEvents              SecurityEvent[]
+  maintenanceEvents           MaintenanceEvent[]
+  unloadingPoints             UnloadingPoint[]
+  unloadingPointAssignmentRules UnloadingPointAssignmentRule[]
+  cameras                     Camera[]
+  anprDetections              AnprDetection[]
+  vehicleIdentificationEvents VehicleIdentificationEvent[]
+  edgeGateways                EdgeGateway[]
+  edgeDevices                 EdgeDevice[]
+  edgeIngestedEvents          EdgeIngestedEvent[]
+  hardwareCommissioningTests  HardwareCommissioningTest[]
+  weightAnomalyEvents         WeightAnomalyEvent[]
+  offlinePolicies             OfflinePolicy[]
+  edgeLocalTransactionMaps    EdgeLocalTransactionMap[]
+  edgeSyncSnapshots           EdgeSyncSnapshot[]
+  edgeSyncConflicts           EdgeSyncConflict[]
+  edgeDeadLetters             EdgeDeadLetter[]
+  edgeSyncedFiles             EdgeSyncedFile[]
+  onboardingSessions          OnboardingSession[]
+  supportTickets              SupportTicket[]
+  serviceMaintenanceRecords   ServiceMaintenanceRecord[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@index([organizationId, status])
+}
+
+model Department {
+  id             String    @id @default(cuid())
+  organizationId String
+  code           String
+  name           String
+  isSystem       Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  organization  Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  defaultUsers  User[]
+  workflowSteps WorkflowStep[]
+  approvals     Approval[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+}
+
+model Permission {
+  id    String @id @default(cuid())
+  code  String @unique
+  name  String
+  group String
+
+  rolePermissions RolePermission[]
+}
+
+model Role {
+  id             String   @id @default(cuid())
+  organizationId String
+  code           String
+  name           String
+  description    String?
+  isSystem       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+}
+
+model RolePermission {
+  id           String @id @default(cuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  organizationId     String
+  email              String
+  passwordHash       String
+  fullName           String
+  isActive           Boolean   @default(true)
+  defaultSiteId      String?
+  defaultDepartmentId String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
+
+  organization              Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  defaultSite               Site?              @relation(fields: [defaultSiteId], references: [id], onDelete: SetNull)
+  defaultDepartment         Department?        @relation(fields: [defaultDepartmentId], references: [id], onDelete: SetNull)
+  userRoles                 UserRole[]
+  driver                    Driver?
+  createdTransactions       Transaction[]      @relation("TransactionCreatedBy")
+  recordedWeighments        Weighment[]        @relation("WeighmentRecordedBy")
+  uploadedDocuments         Document[]         @relation("DocumentUploadedBy")
+  verifiedDocuments         Document[]         @relation("DocumentVerifiedBy")
+  verifiedMaterials         Transaction[]      @relation("TransactionMaterialVerifiedBy")
+  approvals                 Approval[]         @relation("ApprovalApprover")
+  assignedApprovals         Approval[]         @relation("ApprovalAssignedTo")
+  notifications             Notification[]
+  notificationPreferences   NotificationPreference[]
+  acknowledgedAlerts        OperationalAlert[] @relation("AlertAcknowledgedBy")
+  resolvedAlerts            OperationalAlert[] @relation("AlertResolvedBy")
+  instructedUnloadings      Unloading[]        @relation("UnloadingInstructedBy")
+  startedUnloadings         Unloading[]        @relation("UnloadingStartedBy")
+  completedUnloadings       Unloading[]        @relation("UnloadingCompletedBy")
+  completedTransactions     Transaction[]      @relation("TransactionCompletedBy")
+  requestedCorrections      TransactionCorrection[] @relation("TransactionCorrectionRequestedBy")
+  reviewedCorrections       TransactionCorrection[] @relation("TransactionCorrectionReviewedBy")
+  auditLogs                 AuditLog[]
+  acknowledgedSecurityEvents SecurityEvent[]   @relation("SecurityEventAcknowledgedBy")
+  startedMaintenanceEvents  MaintenanceEvent[] @relation("MaintenanceStartedBy")
+  endedMaintenanceEvents    MaintenanceEvent[] @relation("MaintenanceEndedBy")
+  refreshTokens             RefreshToken[]
+  confirmedAnprDetections   AnprDetection[] @relation("AnprDetectionConfirmedBy")
+  vehicleIdentificationEvents VehicleIdentificationEvent[]
+  registeredEdgeGateways    EdgeGateway[] @relation("EdgeGatewayRegisteredBy")
+  commissioningTests        HardwareCommissioningTest[] @relation("CommissioningTestedBy")
+  acknowledgedWeightAnomalies WeightAnomalyEvent[] @relation("WeightAnomalyAcknowledgedBy")
+  resolvedWeightAnomalies     WeightAnomalyEvent[] @relation("WeightAnomalyResolvedBy")
+  updatedAnomalyConfigs       WeightAnomalyConfig[] @relation("WeightAnomalyConfigUpdatedBy")
+  acknowledgedSyncConflicts   EdgeSyncConflict[] @relation("SyncConflictAcknowledgedBy")
+  resolvedSyncConflicts       EdgeSyncConflict[] @relation("SyncConflictResolvedBy")
+  createdOnboardingSessions   OnboardingSession[] @relation("OnboardingCreatedBy")
+  createdSupportTickets       SupportTicket[] @relation("SupportTicketCreatedBy")
+  assignedSupportTickets      SupportTicket[] @relation("SupportTicketAssignedTo")
+  resolvedSupportTickets      SupportTicket[] @relation("SupportTicketResolvedBy")
+  closedSupportTickets        SupportTicket[] @relation("SupportTicketClosedBy")
+  supportTicketActivities     SupportTicketActivity[]
+  performedServiceMaintenance ServiceMaintenanceRecord[] @relation("ServiceMaintenancePerformedBy")
+  createdIntegrationApplications IntegrationApplication[] @relation("IntegrationApplicationCreatedBy")
+
+  @@unique([organizationId, email])
+  @@index([defaultSiteId])
+  @@index([defaultDepartmentId])
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model UserRole {
+  id            String   @id @default(cuid())
+  userId        String
+  roleId        String
+  siteId        String?
+  weighbridgeId String?
+  createdAt     DateTime @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        Role         @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  site        Site?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  weighbridge Weighbridge? @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, roleId, siteId])
+  @@index([userId])
+  @@index([roleId])
+  @@index([siteId])
+  @@index([weighbridgeId])
+}
+
+model Vehicle {
+  id                        String    @id @default(cuid())
+  organizationId            String
+  registrationNumber        String
+  displayRegistrationNumber String
+  vehicleType               String?
+  transporterName           String?
+  supplierId                String?
+  notes                     String?
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+  deletedAt                 DateTime?
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  supplier     Supplier?     @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  transactions Transaction[]
+  anprDetections       AnprDetection[]
+  identificationEvents VehicleIdentificationEvent[]
+
+  @@unique([organizationId, registrationNumber])
+  @@index([organizationId])
+  @@index([supplierId])
+}
+
+model Driver {
+  id             String    @id @default(cuid())
+  organizationId String
+  fullName       String
+  licenseNumber  String?
+  phone          String?
+  userId         String?   @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  transactions Transaction[]
+
+  @@unique([organizationId, licenseNumber])
+  @@index([organizationId])
+}
+
+model Supplier {
+  id             String    @id @default(cuid())
+  organizationId String
+  name           String
+  code           String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  vehicles     Vehicle[]
+  transactions Transaction[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+}
+
+model Material {
+  id             String    @id @default(cuid())
+  organizationId String
+  code           String
+  name           String
+  description    String?
+  unitOfMeasure  String    @default("MT")
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  organization Organization                 @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  assignments  MaterialWorkflowAssignment[]
+  transactions Transaction[]
+  unloadingPointAssignmentRules UnloadingPointAssignmentRule[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+}
+
+model WorkflowDefinition {
+  id             String   @id @default(cuid())
+  organizationId String
+  code           String
+  name           String
+  description    String?
+  isActive       Boolean  @default(true)
+  /// Organization-specific options (auto-continue, optional threshold). Not a universal rule.
+  config         Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization                 @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  steps        WorkflowStep[]
+  assignments  MaterialWorkflowAssignment[]
+  transactions Transaction[]
+
+  @@unique([organizationId, code])
+}
+
+model WorkflowStep {
+  id                   String             @id @default(cuid())
+  workflowDefinitionId String
+  sortOrder            Int
+  capability           WorkflowCapability
+  name                 String
+  isRequired           Boolean            @default(true)
+  approvalDepartmentId String?
+
+  workflowDefinition WorkflowDefinition @relation(fields: [workflowDefinitionId], references: [id], onDelete: Restrict)
+  approvalDepartment Department?        @relation(fields: [approvalDepartmentId], references: [id], onDelete: SetNull)
+  approvals          Approval[]
+
+  @@unique([workflowDefinitionId, sortOrder])
+  @@index([approvalDepartmentId])
+}
+
+model MaterialWorkflowAssignment {
+  id                   String    @id @default(cuid())
+  organizationId       String
+  materialId           String
+  workflowDefinitionId String
+  siteId               String?
+  effectiveFrom        DateTime
+  effectiveTo          DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  organization       Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  material           Material           @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  workflowDefinition WorkflowDefinition @relation(fields: [workflowDefinitionId], references: [id], onDelete: Restrict)
+  site               Site?              @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@index([materialId, siteId, effectiveFrom])
+  @@index([organizationId])
+  @@index([workflowDefinitionId])
+}
+
+model Weighbridge {
+  id             String   @id @default(cuid())
+  organizationId String
+  siteId         String
+  code           String
+  name           String
+  capacityKg     Decimal? @db.Decimal(12, 3)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site              Site               @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  transactions      Transaction[]
+  weighments        Weighment[]
+  hardwareProfile   WeighbridgeHardwareProfile?
+  securityEvents    SecurityEvent[]
+  maintenanceEvents MaintenanceEvent[]
+  cameras              Camera[]
+  anprDetections       AnprDetection[]
+  identificationEvents VehicleIdentificationEvent[]
+  edgeDevices          EdgeDevice[]
+  anomalyConfig        WeightAnomalyConfig?
+  weightAnomalyEvents  WeightAnomalyEvent[]
+  userRoles            UserRole[]
+  supportTickets              SupportTicket[]
+  serviceMaintenanceRecords   ServiceMaintenanceRecord[]
+
+  @@unique([siteId, code])
+  @@index([organizationId])
+}
+
+/// Indicator connection profile. One per weighbridge. Credentials are not stored.
+model WeighbridgeHardwareProfile {
+  id                   String                  @id @default(cuid())
+  organizationId       String
+  siteId               String
+  weighbridgeId        String                  @unique
+  providerType         WeighbridgeProviderType @default(SIMULATOR)
+  connectionType       String                  @default("NONE")
+  deviceName           String
+  deviceIdentifier     String
+  enabled              Boolean                 @default(true)
+  unit                 String                  @default("KG")
+  pollingIntervalMs    Int                     @default(500)
+  connectionTimeoutMs  Int                     @default(3000)
+  healthTimeoutMs      Int                     @default(15000)
+  reconnectEnabled     Boolean                 @default(true)
+  reconnectDelayMs     Int                     @default(3000)
+  maxReconnectAttempts Int                     @default(5)
+  /// Kilogram tolerance for consecutive readings. Calibrate per indicator in production.
+  stabilityToleranceKg Decimal                 @default(5.000) @db.Decimal(12, 3)
+  stabilityConsecutive Int                     @default(3)
+  stabilityDurationMs  Int                     @default(1000)
+  host                 String?
+  port                 Int?
+  serialPort           String?
+  baudRate             Int?
+  dataBits             Int?
+  stopBits             Int?
+  parity               String?
+  protocol             String?
+  /// Manufacturer-specific Modbus map. Empty until the indicator documentation is supplied.
+  modbusMapping        Json?
+  simulatorMode        String                  @default("AUTO")
+  simulatorBaseKg      Decimal?                @db.Decimal(12, 3)
+  lastStatus           HardwareDeviceStatus    @default(DISCONNECTED)
+  lastConnectedAt      DateTime?
+  lastReadingAt        DateTime?
+  lastError            String?
+  lastWeightKg         Decimal?                @db.Decimal(12, 3)
+  lastQuality          WeightQuality?
+  lastSource           WeighmentSource?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  weighbridge  Weighbridge  @relation(fields: [weighbridgeId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, siteId])
+  @@index([enabled, lastStatus])
+}
+
+model Transaction {
+  id                   String            @id @default(cuid())
+  organizationId       String
+  siteId               String
+  referenceNumber      String
+  status               TransactionStatus @default(ARRIVED)
+  heldFromStatus       TransactionStatus?
+  vehicleId            String?
+  driverId             String?
+  supplierId           String?
+  materialId           String?
+  workflowDefinitionId String?
+  weighbridgeId        String?
+  arrivedAt            DateTime
+  completedAt          DateTime?
+  operationMode        OperationMode     @default(SIMULATION)
+  /// Backend-calculated snapshot. Never accept this value from a client.
+  netWeightKg          Decimal?          @db.Decimal(12, 3)
+  holdReason           String?
+  cancelledReason      String?
+  exceptionReason      String?
+  createdByUserId          String
+  completedByUserId        String?
+  materialSource           String?
+  materialVerifiedByUserId String?
+  materialVerifiedAt       DateTime?
+  /// Frozen copy of the workflow applied to this visit. Later master edits must not change it.
+  workflowSnapshot         Json?
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
+
+  organization         Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site                 Site                @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  vehicle              Vehicle?            @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  driver               Driver?             @relation(fields: [driverId], references: [id], onDelete: SetNull)
+  supplier             Supplier?           @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  material             Material?           @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  workflowDefinition   WorkflowDefinition? @relation(fields: [workflowDefinitionId], references: [id], onDelete: SetNull)
+  weighbridge          Weighbridge?        @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+  createdByUser        User                @relation("TransactionCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  completedByUser      User?               @relation("TransactionCompletedBy", fields: [completedByUserId], references: [id], onDelete: SetNull)
+  materialVerifiedByUser User?             @relation("TransactionMaterialVerifiedBy", fields: [materialVerifiedByUserId], references: [id], onDelete: SetNull)
+  weighments         Weighment[]
+  documents          Document[]
+  approvals          Approval[]
+  notifications      Notification[]
+  operationalAlerts  OperationalAlert[]
+  unloading          Unloading?
+  corrections        TransactionCorrection[]
+  securityEvents     SecurityEvent[]
+  anprDetections       AnprDetection[]
+  identificationEvents VehicleIdentificationEvent[]
+  weightAnomalyEvents  WeightAnomalyEvent[]
+  edgeLocalMaps        EdgeLocalTransactionMap[]
+  syncConflicts        EdgeSyncConflict[]
+  supportTickets       SupportTicket[]
+
+  @@unique([organizationId, referenceNumber])
+  @@index([organizationId, status])
+  @@index([organizationId, siteId, arrivedAt])
+  @@index([vehicleId, arrivedAt])
+  @@index([createdByUserId])
+  @@index([completedByUserId])
+  @@index([materialId])
+  @@index([weighbridgeId])
+  @@index([workflowDefinitionId])
+  @@index([materialVerifiedByUserId])
+}
+
+model Weighment {
+  id               String          @id @default(cuid())
+  transactionId    String
+  weighbridgeId    String?
+  sequence         Int
+  kind             WeighmentKind
+  weightKg         Decimal         @db.Decimal(12, 3)
+  recordedAt       DateTime
+  recordedByUserId String
+  source           WeighmentSource
+  rawPayload       Json?
+  createdAt        DateTime        @default(now())
+
+  transaction    Transaction  @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  weighbridge    Weighbridge? @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+  recordedByUser User         @relation("WeighmentRecordedBy", fields: [recordedByUserId], references: [id], onDelete: Restrict)
+
+  @@unique([transactionId, sequence])
+  @@index([transactionId, recordedAt])
+  @@index([weighbridgeId])
+  @@index([recordedByUserId])
+}
+
+model Document {
+  id               String         @id @default(cuid())
+  organizationId   String
+  transactionId    String
+  uploadedByUserId String
+  documentType     String
+  storageKey       String
+  originalFileName String
+  mimeType         String
+  status           DocumentStatus @default(UPLOADED)
+  ocrStatus        OcrStatus      @default(NOT_STARTED)
+  extractedData    Json?
+  verifiedByUserId String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  transaction    Transaction  @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  uploadedByUser User         @relation("DocumentUploadedBy", fields: [uploadedByUserId], references: [id], onDelete: Restrict)
+  verifiedByUser User?        @relation("DocumentVerifiedBy", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([transactionId])
+  @@index([organizationId])
+  @@index([uploadedByUserId])
+  @@index([verifiedByUserId])
+}
+
+model Approval {
+  id                    String           @id @default(cuid())
+  organizationId        String
+  siteId                String
+  transactionId         String
+  workflowStepId        String?
+  snapshotStepSortOrder Int
+  snapshotCapability    String
+  snapshotStepName      String
+  stage                 Int
+  departmentId          String
+  requestedRoleCode     String?
+  assignedUserId        String?
+  decision              ApprovalDecision @default(PENDING)
+  approverUserId        String?
+  comments              String?
+  requestedAt           DateTime         @default(now())
+  decidedAt             DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site          @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  transaction  Transaction   @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  workflowStep WorkflowStep? @relation(fields: [workflowStepId], references: [id], onDelete: SetNull)
+  department   Department    @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  assignedUser User?         @relation("ApprovalAssignedTo", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  approverUser User?         @relation("ApprovalApprover", fields: [approverUserId], references: [id], onDelete: SetNull)
+  notifications Notification[]
+
+  @@unique([transactionId, snapshotStepSortOrder, decision])
+  @@index([organizationId, decision, requestedAt])
+  @@index([departmentId, decision])
+  @@index([siteId, decision])
+  @@index([transactionId, stage])
+  @@index([workflowStepId])
+  @@index([approverUserId])
+  @@index([assignedUserId])
+}
+
+model Notification {
+  id               String                @id @default(cuid())
+  organizationId   String
+  siteId           String?
+  recipientUserId  String
+  type             String
+  category         NotificationCategory  @default(WORKFLOW)
+  severity         NotificationSeverity  @default(INFO)
+  title            String
+  message          String
+  entityType       String?
+  entityId         String?
+  transactionId    String?
+  approvalId       String?
+  eventKey         String
+  readAt           DateTime?
+  createdAt        DateTime              @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  recipient    User         @relation(fields: [recipientUserId], references: [id], onDelete: Restrict)
+  transaction  Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  approval     Approval?    @relation(fields: [approvalId], references: [id], onDelete: SetNull)
+
+  @@unique([recipientUserId, eventKey])
+  @@index([recipientUserId, readAt, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([siteId, createdAt])
+  @@index([type, createdAt])
+  @@index([severity])
+  @@index([category])
+  @@index([transactionId])
+  @@index([approvalId])
+}
+
+model NotificationPreference {
+  id           String               @id @default(cuid())
+  userId       String
+  category     NotificationCategory
+  inAppEnabled Boolean              @default(true)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category])
+  @@index([userId])
+}
+
+/// Attention item for authorized operations users. Distinct from in-app Notification
+/// and from SecurityEvent (fraud/tamper later). Reuses existing transaction exceptions.
+model OperationalAlert {
+  id                   String                 @id @default(cuid())
+  organizationId       String
+  siteId               String
+  type                 String
+  severity             NotificationSeverity
+  title                String
+  message              String
+  status               OperationalAlertStatus @default(OPEN)
+  entityType           String?
+  entityId             String?
+  transactionId        String?
+  eventKey             String
+  acknowledgedByUserId String?
+  acknowledgedAt       DateTime?
+  resolvedByUserId     String?
+  resolvedAt           DateTime?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site               Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  transaction        Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  acknowledgedByUser User?        @relation("AlertAcknowledgedBy", fields: [acknowledgedByUserId], references: [id], onDelete: SetNull)
+  resolvedByUser     User?        @relation("AlertResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, eventKey])
+  @@index([organizationId, status, createdAt])
+  @@index([siteId, status, createdAt])
+  @@index([type, status])
+  @@index([severity, status])
+  @@index([transactionId])
+  @@index([acknowledgedByUserId])
+  @@index([resolvedByUserId])
+
+  supportTickets            SupportTicket[]
+  serviceMaintenanceRecords ServiceMaintenanceRecord[]
+}
+
+model UnloadingPoint {
+  id                 String               @id @default(cuid())
+  organizationId     String
+  siteId             String
+  code               String
+  name               String
+  description        String?
+  status             UnloadingPointStatus @default(AVAILABLE)
+  isActive           Boolean              @default(true)
+  /// Empty means any material may use this point. Codes are material IDs, not names.
+  allowedMaterialIds String[]
+  sortOrder          Int                  @default(0)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  deletedAt          DateTime?
+
+  organization    Organization                   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site            Site                           @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  unloadings      Unloading[]
+  assignmentRules UnloadingPointAssignmentRule[]
+
+  @@unique([siteId, code])
+  @@index([organizationId, siteId, status])
+}
+
+/// Configurable assignment. Priority is lower-first. A material-specific rule
+/// beats a site-wide rule. Never encode industry assumptions in application code.
+model UnloadingPointAssignmentRule {
+  id               String   @id @default(cuid())
+  organizationId   String
+  siteId           String
+  materialId       String?
+  unloadingPointId String
+  priority         Int      @default(100)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site           Site          @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  material       Material?     @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  unloadingPoint UnloadingPoint @relation(fields: [unloadingPointId], references: [id], onDelete: Restrict)
+
+  @@index([siteId, priority])
+  @@index([organizationId])
+  @@index([materialId])
+  @@index([unloadingPointId])
+}
+
+model Unloading {
+  id                 String          @id @default(cuid())
+  transactionId      String          @unique
+  unloadingPointId   String?
+  instructedByUserId String?
+  startedByUserId    String?
+  locationNote       String?
+  notes              String?
+  status             UnloadingStatus @default(NOT_STARTED)
+  assignedAt         DateTime?
+  startedAt          DateTime?
+  completedAt        DateTime?
+  completedByUserId  String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  transaction      Transaction     @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  unloadingPoint   UnloadingPoint? @relation(fields: [unloadingPointId], references: [id], onDelete: SetNull)
+  instructedByUser User?           @relation("UnloadingInstructedBy", fields: [instructedByUserId], references: [id], onDelete: SetNull)
+  startedByUser    User?           @relation("UnloadingStartedBy", fields: [startedByUserId], references: [id], onDelete: SetNull)
+  completedByUser  User?           @relation("UnloadingCompletedBy", fields: [completedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([unloadingPointId])
+  @@index([instructedByUserId])
+  @@index([startedByUserId])
+  @@index([completedByUserId])
+}
+
+/// Foundation only. Requests are recorded; values are not applied in this step.
+model TransactionCorrection {
+  id               String                      @id @default(cuid())
+  organizationId   String
+  transactionId    String
+  field            String
+  originalValue    String
+  proposedValue    String
+  reason           String
+  requestedByUserId String
+  requestedAt      DateTime                    @default(now())
+  status           TransactionCorrectionStatus @default(REQUESTED)
+  reviewedByUserId String?
+  reviewedAt       DateTime?
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  transaction  Transaction  @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  requestedBy  User         @relation("TransactionCorrectionRequestedBy", fields: [requestedByUserId], references: [id], onDelete: Restrict)
+  reviewedBy   User?        @relation("TransactionCorrectionReviewedBy", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([transactionId, requestedAt])
+  @@index([organizationId, status])
+  @@index([requestedByUserId])
+  @@index([reviewedByUserId])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String
+  actorUserId    String?
+  action         String
+  entityType     String
+  entityId       String
+  occurredAt     DateTime @default(now())
+  ipAddress      String?
+  userAgent      String?
+  metadata       Json?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actorUser    User?        @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, occurredAt])
+  @@index([entityType, entityId])
+  @@index([actorUserId])
+}
+
+/// Guided customer/site installation. Does not replace Organization, Site, or device tables.
+model OnboardingSession {
+  id                   String                   @id @default(cuid())
+  organizationId       String
+  siteId               String?
+  createdByUserId      String
+  currentStep          String
+  status               OnboardingSessionStatus  @default(DRAFT)
+  completionPercent    Int                      @default(0)
+  completedSteps       String[]                 @default([])
+  notes                String?
+  settings             Json?
+  lastValidation       Json?
+  lastReadiness        Json?
+  lastHardwareCheck    Json?
+  acceptedWarningKeys  String[]                 @default([])
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  cancelledAt          DateTime?
+  completedAt          DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  createdBy    User         @relation("OnboardingCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, status])
+  @@index([siteId])
+  @@index([createdByUserId])
+}
+
+/// Observation or correlated signal. Not a legal conclusion about hardware tampering.
+model SecurityEvent {
+  id                   String              @id @default(cuid())
+  organizationId       String
+  siteId               String
+  weighbridgeId        String?
+  transactionId        String?
+  severity             SecuritySeverity
+  category             SecurityCategory
+  title                String
+  description          String
+  source               SecurityEventSource
+  correlationKey       String?
+  status               SecurityEventStatus @default(OPEN)
+  acknowledgedByUserId String?
+  acknowledgedAt       DateTime?
+  metadata             Json?
+  occurredAt           DateTime            @default(now())
+
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site               Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  weighbridge        Weighbridge? @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+  transaction        Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  acknowledgedByUser User?        @relation("SecurityEventAcknowledgedBy", fields: [acknowledgedByUserId], references: [id], onDelete: SetNull)
+  weightAnomalyEvent WeightAnomalyEvent?
+
+  @@index([organizationId, occurredAt])
+  @@index([siteId, status])
+  @@index([correlationKey])
+  @@index([transactionId])
+  @@index([weighbridgeId])
+  @@index([acknowledgedByUserId])
+
+  supportTickets            SupportTicket[]
+  serviceMaintenanceRecords ServiceMaintenanceRecord[]
+}
+
+/// Timed maintenance window. Logging continues; this does not disable security permanently.
+model MaintenanceEvent {
+  id               String            @id @default(cuid())
+  organizationId   String
+  siteId           String
+  weighbridgeId    String?
+  startedByUserId  String
+  endedByUserId    String?
+  startedAt        DateTime
+  endedAt          DateTime?
+  reason           String
+  status           MaintenanceStatus
+  notes            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site          Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  weighbridge   Weighbridge? @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+  startedByUser User         @relation("MaintenanceStartedBy", fields: [startedByUserId], references: [id], onDelete: Restrict)
+  endedByUser   User?        @relation("MaintenanceEndedBy", fields: [endedByUserId], references: [id], onDelete: SetNull)
+  serviceMaintenanceRecords ServiceMaintenanceRecord[]
+
+  @@index([organizationId, status])
+  @@index([siteId, startedAt])
+  @@index([weighbridgeId])
+  @@index([startedByUserId])
+  @@index([endedByUserId])
+}
+
+/// Per-weighbridge thresholds. Defaults are DEVELOPMENT DEFAULT, not production metrology values.
+model WeightAnomalyConfig {
+  id                          String   @id @default(cuid())
+  organizationId              String
+  weighbridgeId               String   @unique
+  emptyPlatformThresholdKg    Decimal  @default(50.000) @db.Decimal(12, 3)
+  maxChangePerSecondKg        Decimal  @default(2000.000) @db.Decimal(12, 3)
+  weightJumpThresholdKg       Decimal  @default(3000.000) @db.Decimal(12, 3)
+  maxInstabilityDurationMs    Int      @default(8000)
+  minAnomalyDurationMs        Int      @default(800)
+  consecutiveAnomalyCount     Int      @default(2)
+  cooldownMs                  Int      @default(120000)
+  suddenChangeWindowMs        Int      @default(3000)
+  suppressAlertsInMaintenance Boolean  @default(true)
+  defaultsLabel               String   @default("DEVELOPMENT DEFAULT")
+  updatedByUserId             String?
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  weighbridge   Weighbridge  @relation(fields: [weighbridgeId], references: [id], onDelete: Restrict)
+  updatedByUser User?        @relation("WeightAnomalyConfigUpdatedBy", fields: [updatedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+}
+
+/// Weight-only measurement anomaly. Not a fraud finding and not a physical tamper proof.
+model WeightAnomalyEvent {
+  id                         String                   @id @default(cuid())
+  organizationId             String
+  siteId                     String
+  weighbridgeId              String
+  deviceId                   String?
+  securityEventId            String?                  @unique
+  transactionId              String?
+  type                       WeightAnomalyType
+  status                     WeightAnomalyStatus      @default(OPEN)
+  severity                   NotificationSeverity
+  detectorKind               WeightAnomalyDetectorKind @default(RULE)
+  ruleId                     String
+  ruleVersion                String
+  title                      String
+  description                String
+  explanation                String
+  observedWeightKg           Decimal?                 @db.Decimal(12, 3)
+  previousWeightKg           Decimal?                 @db.Decimal(12, 3)
+  expectedMinKg              Decimal?                 @db.Decimal(12, 3)
+  expectedMaxKg              Decimal?                 @db.Decimal(12, 3)
+  platformState              WeighbridgePlatformState
+  detectionSource            String
+  sourceEventId              String?                  @unique
+  firstDetectedAt            DateTime
+  lastDetectedAt             DateTime
+  occurrenceCount            Int                      @default(1)
+  durationMs                 Int?
+  minObservedKg              Decimal?                 @db.Decimal(12, 3)
+  maxObservedKg              Decimal?                 @db.Decimal(12, 3)
+  sumObservedKg              Decimal?                 @db.Decimal(18, 3)
+  recoveredAt                DateTime?
+  recoveredDurationMs        Int?
+  suppressedDueToMaintenance Boolean                  @default(false)
+  acknowledgedByUserId       String?
+  acknowledgedAt             DateTime?
+  resolvedByUserId           String?
+  resolvedAt                 DateTime?
+  reviewReason               String?
+  createdAt                  DateTime                 @default(now())
+  updatedAt                  DateTime                 @updatedAt
+
+  organization       Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site               Site                      @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  weighbridge        Weighbridge               @relation(fields: [weighbridgeId], references: [id], onDelete: Restrict)
+  transaction        Transaction?              @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  securityEvent      SecurityEvent?            @relation(fields: [securityEventId], references: [id], onDelete: SetNull)
+  acknowledgedByUser User?                     @relation("WeightAnomalyAcknowledgedBy", fields: [acknowledgedByUserId], references: [id], onDelete: SetNull)
+  resolvedByUser     User?                     @relation("WeightAnomalyResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+  observations       WeightAnomalyObservation[]
+  supportTickets     SupportTicket[]
+
+  @@index([organizationId, firstDetectedAt])
+  @@index([siteId, status])
+  @@index([weighbridgeId, type, status])
+  @@index([transactionId])
+  @@index([severity, status])
+}
+
+/// Bounded timeline samples around an anomaly. Not a high-frequency raw-weight store.
+model WeightAnomalyObservation {
+  id            String                    @id @default(cuid())
+  eventId       String
+  recordedAt    DateTime
+  kind          WeightAnomalyTimelineKind
+  weightKg      Decimal?                  @db.Decimal(12, 3)
+  quality       String?
+  platformState String?
+  note          String?
+
+  event WeightAnomalyEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, recordedAt])
+}
+
+/// Site camera. Capture only. ANPR is a separate provider.
+model Camera {
+  id                  String               @id @default(cuid())
+  organizationId      String
+  siteId              String
+  weighbridgeId       String
+  name                String
+  cameraIdentifier    String
+  purpose             CameraPurpose        @default(ENTRY_ANPR)
+  cameraProviderType  CameraProviderType   @default(SIMULATOR)
+  connectionType      CameraConnectionType @default(SIMULATOR)
+  anprProviderType    AnprProviderType     @default(SIMULATOR)
+  enabled             Boolean              @default(true)
+  direction           String?
+  snapshotUrl         String?
+  streamUrl           String?
+  highConfidenceMin   Decimal              @default(0.900) @db.Decimal(4, 3)
+  mediumConfidenceMin Decimal              @default(0.700) @db.Decimal(4, 3)
+  simulatorScenario   String               @default("HIGH_KNOWN")
+  lastStatus          HardwareDeviceStatus @default(DISCONNECTED)
+  lastAnprStatus      AnprProviderStatus   @default(UNAVAILABLE)
+  lastFrameAt         DateTime?
+  lastCommunicationAt DateTime?
+  lastError           String?
+  lastFrameStorageKey String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  organization         Organization                 @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site                 Site                         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  weighbridge          Weighbridge                  @relation(fields: [weighbridgeId], references: [id], onDelete: Restrict)
+  detections           AnprDetection[]
+  identificationEvents VehicleIdentificationEvent[]
+  edgeDevices          EdgeDevice[]
+
+  @@unique([weighbridgeId, cameraIdentifier])
+  @@index([organizationId, siteId])
+  @@index([enabled, lastStatus])
+}
+
+/// ANPR result. Stores plate text and an evidence key, not image bytes.
+model AnprDetection {
+  id                     String                 @id @default(cuid())
+  organizationId         String
+  siteId                 String
+  cameraId               String
+  weighbridgeId          String
+  transactionId          String?
+  rawPlate               String?
+  normalizedPlate        String?
+  displayPlate           String?
+  confidence             Decimal?               @db.Decimal(6, 4)
+  confidenceBand         AnprConfidenceBand
+  provider               String
+  source                 AnprDetectionSource
+  simulated              Boolean                @default(true)
+  lifecycle              AnprDetectionLifecycle @default(DETECTED)
+  imageStorageKey        String?
+  countryRegion          String?
+  boundingBox            Json?
+  candidates             Json
+  processingDurationMs   Int
+  capturedAt             DateTime
+  selectedCandidatePlate String?
+  correctedPlate         String?
+  correctionReason       String?
+  confirmedByUserId      String?
+  confirmedAt            DateTime?
+  vehicleId              String?
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+
+  organization         Organization                 @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site                 Site                         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  camera               Camera                       @relation(fields: [cameraId], references: [id], onDelete: Restrict)
+  weighbridge          Weighbridge                  @relation(fields: [weighbridgeId], references: [id], onDelete: Restrict)
+  transaction          Transaction?                 @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  vehicle              Vehicle?                     @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  confirmedByUser      User?                        @relation("AnprDetectionConfirmedBy", fields: [confirmedByUserId], references: [id], onDelete: SetNull)
+  identificationEvents VehicleIdentificationEvent[]
+
+  @@index([organizationId, siteId, capturedAt])
+  @@index([cameraId, capturedAt])
+  @@index([transactionId])
+  @@index([normalizedPlate])
+  @@index([confirmedByUserId])
+}
+
+model VehicleIdentificationEvent {
+  id              String              @id @default(cuid())
+  organizationId  String
+  siteId          String
+  cameraId        String?
+  weighbridgeId   String
+  transactionId   String?
+  detectionId     String?
+  source          AnprDetectionSource
+  outcome         String
+  rawPlate        String?
+  normalizedPlate String
+  vehicleId       String?
+  reason          String?
+  actorUserId     String
+  createdAt       DateTime            @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  camera       Camera?      @relation(fields: [cameraId], references: [id], onDelete: SetNull)
+  weighbridge  Weighbridge  @relation(fields: [weighbridgeId], references: [id], onDelete: Restrict)
+  transaction  Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  detection    AnprDetection? @relation(fields: [detectionId], references: [id], onDelete: SetNull)
+  vehicle      Vehicle?     @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  actor        User         @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, siteId, createdAt])
+  @@index([transactionId])
+  @@index([detectionId])
+  @@index([actorUserId])
+}
+
+/// Site-side Edge Gateway. Credentials are stored as hashes only.
+model EdgeGateway {
+  id                   String            @id @default(cuid())
+  organizationId       String
+  siteId               String
+  code                 String
+  name                 String
+  status               EdgeGatewayStatus @default(PENDING)
+  enabled              Boolean           @default(true)
+  revokedAt            DateTime?
+  credentialHash       String
+  lastHeartbeatAt      DateTime?
+  lastCommunicationAt  DateTime?
+  softwareVersion      String?
+  buildEnvironment     String?
+  platform             String?
+  connectedDeviceCount Int               @default(0)
+  lastError            String?
+  registeredAt         DateTime          @default(now())
+  registeredByUserId   String?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site               @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  registeredBy User?              @relation("EdgeGatewayRegisteredBy", fields: [registeredByUserId], references: [id], onDelete: SetNull)
+  devices      EdgeDevice[]
+  events       EdgeIngestedEvent[]
+  localTransactionMaps EdgeLocalTransactionMap[]
+  syncSnapshot         EdgeSyncSnapshot?
+  syncConflicts        EdgeSyncConflict[]
+  deadLetters          EdgeDeadLetter[]
+  syncedFiles          EdgeSyncedFile[]
+  supportTickets              SupportTicket[]
+  serviceMaintenanceRecords   ServiceMaintenanceRecord[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, siteId])
+  @@index([status, lastHeartbeatAt])
+  @@index([registeredByUserId])
+}
+
+/// Hardware device attached to a gateway. Secrets are never stored here.
+model EdgeDevice {
+  id                  String               @id @default(cuid())
+  organizationId      String
+  siteId              String
+  gatewayId           String
+  deviceType          EdgeDeviceType
+  name                String
+  code                String
+  manufacturer        String?
+  model               String?
+  serialNumber        String?
+  protocol            String?
+  connectionType      String?
+  provider            String               @default("SIMULATOR")
+  weighbridgeId       String?
+  cameraId            String?
+  enabled             Boolean              @default(true)
+  status              HardwareDeviceStatus @default(DISCONNECTED)
+  lastCommunicationAt DateTime?
+  lastError           String?
+  lastReadingSummary  Json?
+  configurationRef    Json?
+  firmwareVersion     String?
+  notes               String?
+  host                String?
+  port                Int?
+  serialPort          String?
+  adapterKey          String?
+  protocolReadiness   HardwareProtocolReadiness   @default(SIMULATOR)
+  installationStatus  HardwareInstallationStatus  @default(PLANNED)
+  lastDiagnostic      Json?
+  lastClockIssue      String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site                @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  gateway      EdgeGateway         @relation(fields: [gatewayId], references: [id], onDelete: Restrict)
+  weighbridge  Weighbridge?        @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+  camera       Camera?             @relation(fields: [cameraId], references: [id], onDelete: SetNull)
+  events             EdgeIngestedEvent[]
+  commissioningTests HardwareCommissioningTest[]
+  supportTickets            SupportTicket[]
+  serviceMaintenanceRecords ServiceMaintenanceRecord[]
+
+  @@unique([gatewayId, code])
+  @@index([organizationId, siteId])
+  @@index([weighbridgeId])
+  @@index([cameraId])
+  @@index([enabled, status])
+  @@index([installationStatus])
+}
+
+/// Commissioning / hardware test results. Never stores credentials.
+model HardwareCommissioningTest {
+  id             String                   @id @default(cuid())
+  organizationId String
+  siteId         String
+  deviceId       String
+  testKey        String
+  testType       String
+  result         CommissioningTestResult  @default(NOT_TESTED)
+  notes          String?
+  error          String?
+  testedAt       DateTime?
+  testedByUserId String?
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  device       EdgeDevice   @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  testedBy     User?        @relation("CommissioningTestedBy", fields: [testedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([deviceId, testKey])
+  @@index([organizationId, siteId])
+  @@index([testedByUserId])
+}
+
+/// Idempotent ingest log. eventId is supplied by the Edge Gateway.
+model EdgeIngestedEvent {
+  eventId            String           @id
+  organizationId     String
+  siteId             String
+  gatewayId          String
+  deviceId           String
+  eventType          EdgeEventType
+  deviceEventTime    DateTime
+  gatewayReceiveTime DateTime
+  backendReceiveTime DateTime
+  sequence           String?
+  softwareVersion    String?
+  payload            Json
+  status             EdgeIngestStatus @default(RECEIVED)
+  priority           EdgeEventPriority @default(NORMAL)
+  localTransactionId String?
+  payloadHash        String?
+  ackStatus          EdgeSyncAckStatus?
+  dependencyEventId  String?
+  weighmentId        String?
+  anprDetectionId    String?
+  documentId         String?
+  resultSummary      Json?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  gateway      EdgeGateway  @relation(fields: [gatewayId], references: [id], onDelete: Restrict)
+  device       EdgeDevice   @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([gatewayId, createdAt])
+  @@index([deviceId, createdAt])
+  @@index([weighmentId])
+  @@index([anprDetectionId])
+  @@index([documentId])
+  @@index([localTransactionId])
+  @@index([priority, createdAt])
+}
+
+/// Site/org policy for what the Edge may do while the backend is unreachable.
+model OfflinePolicy {
+  id                             String            @id @default(cuid())
+  organizationId                 String
+  siteId                         String
+  version                        Int               @default(1)
+  source                         String            @default("CENTRAL")
+  allowWeightRead                Boolean           @default(true)
+  allowAnpr                      Boolean           @default(true)
+  allowDocumentCapture           Boolean           @default(true)
+  allowBasicTransactionRecording Boolean           @default(true)
+  allowWeightAnomalyDetection    Boolean           @default(true)
+  transactionCompletion          OfflineCapability @default(CONDITIONAL)
+  materialVerification           OfflineCapability @default(CONDITIONAL)
+  approvals                      OfflineCapability @default(BLOCKED)
+  configChanges                  OfflineCapability @default(BLOCKED)
+  userManagement                 OfflineCapability @default(BLOCKED)
+  hardwareConfigChanges          OfflineCapability @default(BLOCKED)
+  maxConfigAgeHours              Int               @default(24)
+  createdAt                      DateTime          @default(now())
+  updatedAt                      DateTime          @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, siteId])
+  @@index([organizationId])
+}
+
+/// Maps a collision-resistant offline transaction id to a central Transaction.
+model EdgeLocalTransactionMap {
+  id                 String   @id @default(cuid())
+  organizationId     String
+  siteId             String
+  gatewayId          String
+  localTransactionId String
+  transactionId      String?
+  vehicleNumber      String?
+  weighbridgeId      String?
+  localState         String
+  centralStatus      String?
+  completionState    String   @default("NONE")
+  grossWeightKg      Decimal? @db.Decimal(12, 3)
+  tareWeightKg       Decimal? @db.Decimal(12, 3)
+  netWeightKg        Decimal? @db.Decimal(12, 3)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  gateway      EdgeGateway  @relation(fields: [gatewayId], references: [id], onDelete: Restrict)
+  transaction  Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@unique([gatewayId, localTransactionId])
+  @@index([organizationId, siteId])
+  @@index([transactionId])
+}
+
+/// Last reported Edge connectivity and queue snapshot. Not a live probe of the site LAN.
+model EdgeSyncSnapshot {
+  gatewayId            String                 @id
+  organizationId       String
+  siteId               String
+  connectivityState    EdgeConnectivityState
+  internetStatus       String
+  backendStatus        String
+  hardwareStatus       String
+  syncStatus           String
+  queued               Int                    @default(0)
+  syncing              Int                    @default(0)
+  synced               Int                    @default(0)
+  failed               Int                    @default(0)
+  deadLetter           Int                    @default(0)
+  lastSuccessfulSyncAt DateTime?
+  nextRetryAt          DateTime?
+  lastError            String?
+  storageUsedBytes     Int                    @default(0)
+  storageLimitBytes    Int                    @default(524288000)
+  configVersion        String?
+  configCachedAt       DateTime?
+  configStale          Boolean                @default(false)
+  updatedAt            DateTime               @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  gateway      EdgeGateway  @relation(fields: [gatewayId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, siteId])
+}
+
+/// Detected local-vs-central disagreement. Never auto-overwritten.
+model EdgeSyncConflict {
+  id                   String                 @id @default(cuid())
+  organizationId       String
+  siteId               String
+  gatewayId            String
+  eventId              String
+  localTransactionId   String?
+  transactionId        String?
+  localState           String
+  centralState         String
+  reason               String
+  recommendedAction    String
+  status               EdgeSyncConflictStatus @default(OPEN)
+  acknowledgedByUserId String?
+  acknowledgedAt       DateTime?
+  resolvedByUserId     String?
+  resolvedAt           DateTime?
+  resolutionNote       String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site               Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  gateway            EdgeGateway  @relation(fields: [gatewayId], references: [id], onDelete: Restrict)
+  transaction        Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  acknowledgedByUser User?        @relation("SyncConflictAcknowledgedBy", fields: [acknowledgedByUserId], references: [id], onDelete: SetNull)
+  resolvedByUser     User?        @relation("SyncConflictResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([gatewayId, eventId])
+  @@index([organizationId, status, createdAt])
+  @@index([transactionId])
+}
+
+/// Permanently failed sync events. Never silently deleted.
+model EdgeDeadLetter {
+  eventId            String   @id
+  organizationId     String
+  siteId             String
+  gatewayId          String
+  eventType          String
+  error              String
+  retryCount         Int
+  firstFailureAt     DateTime
+  lastFailureAt      DateTime
+  payloadRef         Json
+  recommendedAction  String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  gateway      EdgeGateway  @relation(fields: [gatewayId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, gatewayId])
+}
+
+/// Idempotent offline file upload registry.
+model EdgeSyncedFile {
+  id           String   @id @default(cuid())
+  organizationId String
+  siteId       String
+  gatewayId    String
+  fileId       String
+  contentHash  String
+  mimeType     String
+  sizeBytes    Int
+  eventId      String?
+  documentId   String?
+  contentBase64 String? @db.Text
+  createdAt    DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site         Site         @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  gateway      EdgeGateway  @relation(fields: [gatewayId], references: [id], onDelete: Restrict)
+
+  @@unique([gatewayId, fileId])
+  @@unique([gatewayId, contentHash])
+  @@index([organizationId, siteId])
+}
+
+/// Metadata only. Backup file bytes are never served through the API.
+model BackupRun {
+  id             String          @id @default(cuid())
+  organizationId String?
+  status         BackupRunStatus
+  trigger        BackupTrigger
+  startedAt      DateTime
+  finishedAt     DateTime?
+  verifiedAt     DateTime?
+  sizeBytes      Int?
+  relativeName   String?
+  checksumSha256 String?
+  errorCode      String?
+  keep           Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([status, startedAt])
+  @@index([organizationId, startedAt])
+}
+
+/// Customer/support ticket. Not a hardware health event and not a maintenance window.
+model SupportTicket {
+  id                   String                @id @default(cuid())
+  organizationId       String
+  siteId               String
+  ticketNumber         String
+  category             SupportTicketCategory
+  priority             SupportTicketPriority @default(MEDIUM)
+  status               SupportTicketStatus   @default(OPEN)
+  subject              String
+  description          String
+  createdByUserId      String
+  assignedUserId       String?
+  assignedTeam         String?
+  weighbridgeId        String?
+  gatewayId            String?
+  deviceId             String?
+  transactionId        String?
+  securityEventId      String?
+  operationalAlertId   String?
+  weightAnomalyEventId String?
+  resolutionSummary    String?
+  resolvedAt           DateTime?
+  resolvedByUserId     String?
+  closedAt             DateTime?
+  closedByUserId       String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+
+  organization       Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site               Site                      @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  createdByUser      User                      @relation("SupportTicketCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  assignedUser       User?                     @relation("SupportTicketAssignedTo", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  resolvedByUser     User?                     @relation("SupportTicketResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+  closedByUser       User?                     @relation("SupportTicketClosedBy", fields: [closedByUserId], references: [id], onDelete: SetNull)
+  weighbridge        Weighbridge?              @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+  gateway            EdgeGateway?              @relation(fields: [gatewayId], references: [id], onDelete: SetNull)
+  device             EdgeDevice?               @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+  transaction        Transaction?              @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  securityEvent      SecurityEvent?            @relation(fields: [securityEventId], references: [id], onDelete: SetNull)
+  operationalAlert   OperationalAlert?         @relation(fields: [operationalAlertId], references: [id], onDelete: SetNull)
+  weightAnomalyEvent WeightAnomalyEvent?       @relation(fields: [weightAnomalyEventId], references: [id], onDelete: SetNull)
+  activities         SupportTicketActivity[]
+  maintenanceRecords ServiceMaintenanceRecord[]
+
+  @@unique([organizationId, ticketNumber])
+  @@index([organizationId, status, createdAt])
+  @@index([organizationId, priority, createdAt])
+  @@index([siteId, status])
+  @@index([weighbridgeId])
+  @@index([gatewayId])
+  @@index([deviceId])
+  @@index([transactionId])
+  @@index([createdByUserId])
+  @@index([assignedUserId])
+  @@index([securityEventId])
+  @@index([operationalAlertId])
+  @@index([weightAnomalyEventId])
+}
+
+model SupportTicketActivity {
+  id             String                     @id @default(cuid())
+  organizationId String
+  ticketId       String
+  actorUserId    String
+  type           SupportActivityType
+  visibility     SupportActivityVisibility
+  description    String
+  createdAt      DateTime                   @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  ticket       SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Restrict)
+  actorUser    User          @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([ticketId, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([actorUserId])
+}
+
+/// Work order for corrective/preventive service. Distinct from MaintenanceEvent weighbridge windows.
+model ServiceMaintenanceRecord {
+  id                 String                    @id @default(cuid())
+  organizationId     String
+  siteId             String
+  recordNumber       String
+  type               ServiceMaintenanceType
+  status             ServiceMaintenanceStatus  @default(SCHEDULED)
+  reason             String
+  description        String
+  findings           String?
+  actionTaken        String?
+  partsReplaced      String?
+  beforeCondition    String?
+  afterCondition     String?
+  performedByUserId  String?
+  ticketId           String?
+  weighbridgeId      String?
+  gatewayId          String?
+  deviceId           String?
+  securityEventId    String?
+  operationalAlertId String?
+  maintenanceEventId String?
+  startedAt          DateTime?
+  endedAt            DateTime?
+  completedAt        DateTime?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  organization     Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  site             Site              @relation(fields: [siteId], references: [id], onDelete: Restrict)
+  performedByUser  User?             @relation("ServiceMaintenancePerformedBy", fields: [performedByUserId], references: [id], onDelete: SetNull)
+  ticket           SupportTicket?    @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  weighbridge      Weighbridge?      @relation(fields: [weighbridgeId], references: [id], onDelete: SetNull)
+  gateway          EdgeGateway?      @relation(fields: [gatewayId], references: [id], onDelete: SetNull)
+  device           EdgeDevice?       @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+  securityEvent    SecurityEvent?    @relation(fields: [securityEventId], references: [id], onDelete: SetNull)
+  operationalAlert OperationalAlert? @relation(fields: [operationalAlertId], references: [id], onDelete: SetNull)
+  maintenanceEvent MaintenanceEvent? @relation(fields: [maintenanceEventId], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, recordNumber])
+  @@index([organizationId, status, createdAt])
+  @@index([siteId, status])
+  @@index([weighbridgeId])
+  @@index([gatewayId])
+  @@index([deviceId])
+  @@index([ticketId])
+  @@index([performedByUserId])
+  @@index([maintenanceEventId])
+  @@index([securityEventId])
+  @@index([operationalAlertId])
+}
+
+/// Organization-owned integration application. Not a platform super-admin.
+model IntegrationApplication {
+  id                  String                  @id @default(cuid())
+  organizationId      String
+  name                String
+  description         String?
+  status              IntegrationStatus       @default(ACTIVE)
+  environment         IntegrationEnvironment  @default(TEST)
+  scopes              String[]                @default([])
+  siteIds             String[]                @default([])
+  requestsPerMinute   Int                     @default(60)
+  requestsPerHour     Int                     @default(1200)
+  createdByUserId     String
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdBy    User                   @relation("IntegrationApplicationCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  credentials  IntegrationCredential[]
+  webhooks     IntegrationWebhook[]
+  idempotencyKeys IntegrationIdempotencyKey[]
+  externalReferences IntegrationExternalReference[]
+  fieldMappings IntegrationFieldMapping[]
+  requestLogs  IntegrationRequestLog[]
+  deliveries   IntegrationWebhookDelivery[]
+
+  @@index([organizationId, status])
+  @@index([createdByUserId])
+}
+
+model IntegrationCredential {
+  id              String                       @id @default(cuid())
+  organizationId  String
+  applicationId   String
+  clientId        String                       @unique
+  secretHash      String                       @unique
+  secretPrefix    String
+  status          IntegrationCredentialStatus  @default(ACTIVE)
+  expiresAt       DateTime?
+  lastUsedAt      DateTime?
+  revokedAt       DateTime?
+  createdAt       DateTime                     @default(now())
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  IntegrationApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, applicationId])
+  @@index([applicationId, status])
+}
+
+model IntegrationWebhook {
+  id             String                    @id @default(cuid())
+  organizationId String
+  applicationId  String
+  url            String
+  status         IntegrationWebhookStatus  @default(ACTIVE)
+  eventTypes     String[]                  @default([])
+  secretCiphertext String
+  secretPrefix   String
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+
+  organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  IntegrationApplication      @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  deliveries   IntegrationWebhookDelivery[]
+
+  @@index([organizationId, status])
+  @@index([applicationId, status])
+}
+
+model IntegrationOutboxEvent {
+  id             String    @id @default(cuid())
+  organizationId String
+  siteId         String?
+  eventType      String
+  entityType     String
+  entityId       String
+  payload        Json
+  isTest         Boolean   @default(false)
+  correlationId  String?
+  occurredAt     DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+
+  organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  deliveries   IntegrationWebhookDelivery[]
+
+  @@index([organizationId, occurredAt])
+  @@index([organizationId, eventType, occurredAt])
+  @@index([entityType, entityId])
+}
+
+model IntegrationWebhookDelivery {
+  id               String                    @id @default(cuid())
+  organizationId   String
+  applicationId    String
+  webhookId        String
+  eventId          String
+  status           IntegrationDeliveryStatus @default(PENDING)
+  attemptCount     Int                       @default(0)
+  responseStatus   Int?
+  lastAttemptAt    DateTime?
+  nextRetryAt      DateTime                  @default(now())
+  failureReason    String?
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  IntegrationApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  webhook      IntegrationWebhook     @relation(fields: [webhookId], references: [id], onDelete: Restrict)
+  event        IntegrationOutboxEvent @relation(fields: [eventId], references: [id], onDelete: Restrict)
+
+  @@index([status, nextRetryAt])
+  @@index([organizationId, createdAt])
+  @@index([webhookId, createdAt])
+  @@index([applicationId, createdAt])
+  @@index([eventId])
+}
+
+model IntegrationIdempotencyKey {
+  id                 String   @id @default(cuid())
+  organizationId     String
+  applicationId      String
+  endpoint           String
+  idempotencyKey     String
+  requestFingerprint String
+  responseStatus     Int
+  responseBody       Json
+  createdAt          DateTime @default(now())
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  IntegrationApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, applicationId, endpoint, idempotencyKey])
+  @@index([createdAt])
+}
+
+model IntegrationExternalReference {
+  id             String                   @id @default(cuid())
+  organizationId String
+  applicationId  String
+  entityType     String
+  entityId       String
+  externalType   IntegrationExternalType
+  externalId     String
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  IntegrationApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, applicationId, externalType, externalId])
+  @@index([organizationId, entityType, entityId])
+  @@index([applicationId, createdAt])
+}
+
+model IntegrationFieldMapping {
+  id             String   @id @default(cuid())
+  organizationId String
+  applicationId  String
+  externalField  String
+  trinetraField  String
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  IntegrationApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, applicationId, externalField])
+  @@index([applicationId])
+}
+
+model IntegrationRequestLog {
+  id             String   @id @default(cuid())
+  organizationId String
+  applicationId  String
+  credentialId   String?
+  method         String
+  path           String
+  statusCode     Int
+  durationMs     Int
+  requestId      String
+  rateLimited    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  IntegrationApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([applicationId, createdAt])
+  @@index([requestId])
+}

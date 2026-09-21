@@ -5,16 +5,15 @@ node_modules/
 .yarn/install-state.gz
 .pnpm-store/
 
-# Next.js
+# Build output
 .next/
 out/
-
-# Production
 build/
 dist/
 
-# Convex local
-.convex/
+# Prisma local SQLite artifacts (not used, but ignore if created)
+*.db
+*.db-journal
 
 # Environment and secrets
 .env
@@ -31,19 +30,28 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Local database dumps (never commit)
+*.dump
+*.sql.gz
+*.pgdump
+
+# Local document storage (development uploads, not source)
+apps/api/storage/
+apps/edge/data/
+storage/
+
 # Testing and coverage
 coverage/
 .nyc_output/
 
 # TypeScript
 *.tsbuildinfo
-next-env.d.ts
 
-# Vercel
+# Vercel / hosting
 .vercel/
-
-# Turbo
-.turbo/
+.firebase/
+firebase-debug.log
+.firebaserc.local
 
 # OS
 .DS_Store

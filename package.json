@@ -1,0 +1,36 @@
+{
+  "name": "trinetra-systems",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Smart Weighbridge Automation & Material Intelligence Platform",
+  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @trinetra/web dev",
+    "dev:api": "pnpm --filter @trinetra/api dev",
+    "dev:edge": "pnpm --filter @trinetra/edge dev",
+    "build:web": "pnpm --filter @trinetra/web build",
+    "build:api": "pnpm --filter @trinetra/api build",
+    "build:edge": "pnpm --filter @trinetra/edge build",
+    "typecheck": "pnpm --filter @trinetra/web typecheck && pnpm --filter @trinetra/api typecheck && pnpm --filter @trinetra/edge typecheck",
+    "test": "pnpm --filter @trinetra/api test && pnpm --filter @trinetra/web test && pnpm --filter @trinetra/edge test",
+    "lint": "pnpm --filter @trinetra/web lint",
+    "validate:config": "pnpm --filter @trinetra/api validate:config",
+    "deploy:firebase": "pnpm build:web && firebase deploy --only hosting --project trinetra-systems-2026",
+    "db:generate": "pnpm --filter @trinetra/api db:generate",
+    "db:validate": "pnpm --filter @trinetra/api db:validate",
+    "db:migrate": "pnpm --filter @trinetra/api db:migrate",
+    "db:seed": "pnpm --filter @trinetra/api db:seed",
+    "db:studio": "pnpm --filter @trinetra/api db:studio"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma"
+    ]
+  }
+}

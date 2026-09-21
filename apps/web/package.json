@@ -1,0 +1,29 @@
+{
+  "name": "@trinetra/web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "test": "tsx --test src/modules/dashboard/dashboard.test.ts src/modules/dashboard/reports.test.ts src/modules/notifications/notifications.test.ts src/modules/weighbridge/hardware.test.ts src/modules/cameras/camera-anpr.test.ts src/modules/gateways/gateway.test.ts src/modules/pilot/pilot.test.ts src/modules/anomalies/anomaly.test.ts src/modules/sync/sync.test.ts src/modules/driver/driver.test.ts src/modules/reliability/reliability.test.ts src/modules/monitoring/monitoring.test.ts src/modules/tenancy/tenancy.test.ts src/modules/onboarding/onboarding.test.ts src/modules/support/support.test.ts src/modules/integrations/integrations.test.ts"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "tsx": "^4.20.5",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  }
+}
