@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: Trinetra Integration API
+  version: "1.0"
+  description: External integration surface at /api/v1/ext. Session UI APIs remain at /api/v1 and are not listed here.
+servers:
+  - url: /api/v1
+paths:
+  /ext/organization:
+    get:
+      security: [{ IntegrationSecret: [] }]
+      description: Requires ORGANIZATION_READ
+      responses:
+        "200": { description: Organization and integration metadata }
+        "401": { description: Authentication failed }
+  /ext/sites:
+    get:
+      security: [{ IntegrationSecret: [] }]
+      responses:
+        "200": { description: Sites in the integration site scope }
+  /ext/transactions:
+    get:
+      security: [{ IntegrationSecret: [] }]
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: pageSize
+          schema: { type: integer, maximum: 100 }
+        - in: query
+          name: updatedSince
+          schema: { type: string, format: date-time }
+          description: UTC ISO-8601 compared to transaction.updatedAt
+        - in: query
+          name: siteId
+          schema: { type: string }
+      responses:
+        "200": { description: Paginated transactions }
+  /ext/vehicles:
+    get:
+      security: [{ IntegrationSecret: [] }]
+      responses:
+        "200": { description: Vehicles }
+    post:
+      security: [{ IntegrationSecret: [] }]
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema: { type: string, maxLength: 128 }
+      responses:
+        "201": { description: Vehicle created }
+        "409": { description: Idempotency conflict }
+  /ext/references:
+    post:
+      security: [{ IntegrationSecret: [] }]
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema: { type: string }
+      responses:
+        "201": { description: External reference stored }
+        "409": { description: Duplicate external id }
+  /ext/documents:
+    get:
+      security: [{ IntegrationSecret: [] }]
+      description: Metadata only. storageKey and OCR rawText are omitted.
+      responses:
+        "200": { description: Document metadata }
+  /ext/documents/{id}/file:
+    get:
+      security: [{ IntegrationSecret: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: File bytes via existing storage, not a permanent private URL }
+components:
+  securitySchemes:
+    IntegrationSecret:
+      type: http
+      scheme: bearer
+      description: tsk_test_ or tsk_live_ secret. Alternative header X-Trinetra-Api-Key.
+  schemas:
+    ExternalError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - AUTHENTICATION_FAILED
+                - FORBIDDEN
+                - INVALID_REQUEST
+                - RESOURCE_NOT_FOUND
+                - CONFLICT
+                - RATE_LIMITED
+                - VALIDATION_FAILED
+                - INTERNAL_ERROR
+            message: { type: string }
+        requestId: { type: string }
+        correlationId: { type: string }
